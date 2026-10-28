@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Servis - PT Olean Permata Telematika</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0f4c81;
+            --secondary-color: #00a3ff;
+            --bg-dark: #0a1118;
+        }
+        body {
+            background-color: #f4f7f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-custom {
+            background-color: var(--bg-dark);
+            border-bottom: 3px solid var(--secondary-color);
+        }
+        .logo-box {
+            background: #ffffff;
+            padding: 6px 14px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .logo-box img {
+            height: 32px;
+            width: auto;
+            object-fit: contain;
+        }
+        .card-stat {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .card-stat:hover {
+            transform: translateY(-3px);
+        }
+        .btn-custom {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #0a365c;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top py-2">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <div class="logo-box">
+                    <img src="logo.png" alt="PT. OLEAN PERMATA TELEMATIKA">
+                </div>
+            </a>
+            <span class="navbar-text text-light fs-6 d-none d-md-block">
+                Sistem Layanan & Tiket Servis Jaringan
+            </span>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+
+        <!-- DASHBOARD STATISTIK -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+                <div class="card card-stat bg-white p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small fw-bold">TOTAL TIKET</p>
+                            <h3 class="mb-0 fw-bold text-dark" id="stat-total">0</h3>
+                        </div>
+                        <div class="bg-light p-3 rounded-circle text-primary">
+                            <i class="fa-solid fa-ticket fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card card-stat bg-white p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small fw-bold">PENDING</p>
+                            <h3 class="mb-0 fw-bold text-warning" id="stat-pending">0</h3>
+                        </div>
+                        <div class="bg-light p-3 rounded-circle text-warning">
+                            <i class="fa-solid fa-clock fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card card-stat bg-white p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small fw-bold">PROSES</p>
+                            <h3 class="mb-0 fw-bold text-info" id="stat-proses">0</h3>
+                        </div>
+                        <div class="bg-light p-3 rounded-circle text-info">
+                            <i class="fa-solid fa-spinner fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card card-stat bg-white p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small fw-bold">SELESAI</p>
+                            <h3 class="mb-0 fw-bold text-success" id="stat-selesai">0</h3>
+                        </div>
+                        <div class="bg-light p-3 rounded-circle text-success">
+                            <i class="fa-solid fa-check-circle fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- FORMULIR INPUT / EDIT DATA -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 rounded-3">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="card-title mb-0 fw-bold text-dark" id="form-title">
+                            <i class="fa-solid fa-plus-circle me-2 text-primary"></i>Buat Tiket Servis Baru
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="ticket-form" novalidate>
+                            <input type="hidden" id="ticket-id">
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Nama Pelanggan / Instansi</label>
+                                <input type="text" class="form-control" id="nama-pelanggan" placeholder="Contoh: UNMER Madiun" required>
+                                <div class="invalid-feedback">Nama pelanggan wajib diisi!</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Kategori Layanan</label>
+                                <select class="form-select" id="kategori" required>
+                                    <option value="">-- Pilih Layanan --</option>
+                                    <option value="Internet Broadband">Internet Broadband</option>
+                                    <option value="Internet Dedicated">Internet Dedicated</option>
+                                    <option value="Instalasi Fiber Optik">Instalasi Fiber Optik</option>
+                                    <option value="Maintenance Jaringan">Maintenance Jaringan</option>
+                                </select>
+                                <div class="invalid-feedback">Pilih kategori layanan!</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Deskripsi Kendala / Tugas</label>
+                                <textarea class="form-control" id="deskripsi" rows="3" placeholder="Jelaskan kendala servis secara singkat..." required></textarea>
+                                <div class="invalid-feedback">Deskripsi kendala wajib diisi!</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Status Servis</label>
+                                <select class="form-select" id="status">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Diproses">Diproses</option>
+                                    <option value="Selesai">Selesai</option>
+                                </select>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-custom fw-bold" id="btn-submit">
+                                    <i class="fa-solid fa-save me-1"></i> Simpan Tiket
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary d-none" id="btn-cancel" onclick="resetForm()">
+                                    Batal Edit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DAFTAR & TABEL DATA -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 rounded-3">
+                    <div class="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <h5 class="card-title mb-0 fw-bold text-dark">
+                            <i class="fa-solid fa-list me-2 text-primary"></i>Daftar Tiket Servis
+                        </h5>
+                        <div class="w-50">
+                            <input type="text" class="form-control form-control-sm" id="search-input" placeholder="🔍 Cari pelanggan atau kendala..." onkeyup="renderTickets()">
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Pelanggan</th>
+                                        <th>Layanan</th>
+                                        <th>Kendala</th>
+                                        <th>Status</th>
+                                        <th class="text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ticket-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="empty-state" class="text-center py-5 d-none">
+                            <i class="fa-solid fa-folder-open text-muted fs-1 mb-2"></i>
+                            <p class="text-muted mb-0">Belum ada data tiket servis yang dicatat.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT JAVASCRIPT -->
+    <script>
+        let tickets = JSON.parse(localStorage.getItem('olean_tickets')) || [
+            { id: 1, nama: 'PT Olean Madiun', kategori: 'Maintenance Jaringan', deskripsi: 'Pemeriksaan rutin kabel serat optik', status: 'Diproses' },
+            { id: 2, nama: 'Rumah Sahabat IRA', kategori: 'Internet Broadband', deskripsi: 'Pemasangan Wi-Fi area baru', status: 'Selesai' }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            saveAndRender();
+        });
+
+        const ticketForm = document.getElementById('ticket-form');
+
+        ticketForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (!ticketForm.checkValidity()) {
+                e.stopPropagation();
+                ticketForm.classList.add('was-validated');
+                return;
+            }
+
+            const id = document.getElementById('ticket-id').value;
+            const nama = document.getElementById('nama-pelanggan').value.trim();
+            const kategori = document.getElementById('kategori').value;
+            const deskripsi = document.getElementById('deskripsi').value.trim();
+            const status = document.getElementById('status').value;
+
+            if (id) {
+                const index = tickets.findIndex(t => t.id == id);
+                tickets[index] = { id: Number(id), nama, kategori, deskripsi, status };
+            } else {
+                const newTicket = {
+                    id: Date.now(),
+                    nama,
+                    kategori,
+                    deskripsi,
+                    status
+                };
+                tickets.push(newTicket);
+            }
+
+            resetForm();
+            saveAndRender();
+        });
+
+        function saveAndRender() {
+            localStorage.setItem('olean_tickets', JSON.stringify(tickets));
+            renderTickets();
+            updateStats();
+        }
+
+        function renderTickets() {
+            const tbody = document.getElementById('ticket-table-body');
+            const searchKeyword = document.getElementById('search-input').value.toLowerCase();
+            const emptyState = document.getElementById('empty-state');
+
+            tbody.innerHTML = '';
+
+            const filteredTickets = tickets.filter(t => 
+                t.nama.toLowerCase().includes(searchKeyword) || 
+                t.deskripsi.toLowerCase().includes(searchKeyword) ||
+                t.kategori.toLowerCase().includes(searchKeyword)
+            );
+
+            if (filteredTickets.length === 0) {
+                emptyState.classList.remove('d-none');
+            } else {
+                emptyState.classList.add('d-none');
+                filteredTickets.forEach((t, index) => {
+                    let badgeClass = 'bg-secondary';
+                    if (t.status === 'Pending') badgeClass = 'bg-warning text-dark';
+                    if (t.status === 'Diproses') badgeClass = 'bg-info text-dark';
+                    if (t.status === 'Selesai') badgeClass = 'bg-success';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td class="fw-bold">${t.nama}</td>
+                            <td><small class="text-muted">${t.kategori}</small></td>
+                            <td>${t.deskripsi}</td>
+                            <td><span class="badge ${badgeClass}">${t.status}</span></td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editTicket(${t.id})">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteTicket(${t.id})">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').innerText = tickets.length;
+            document.getElementById('stat-pending').innerText = tickets.filter(t => t.status === 'Pending').length;
+            document.getElementById('stat-proses').innerText = tickets.filter(t => t.status === 'Diproses').length;
+            document.getElementById('stat-selesai').innerText = tickets.filter(t => t.status === 'Selesai').length;
+        }
+
+        function editTicket(id) {
+            const t = tickets.find(ticket => ticket.id == id);
+            if (t) {
+                document.getElementById('ticket-id').value = t.id;
+                document.getElementById('nama-pelanggan').value = t.nama;
+                document.getElementById('kategori').value = t.kategori;
+                document.getElementById('deskripsi').value = t.deskripsi;
+                document.getElementById('status').value = t.status;
+
+                document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-pen-to-square me-2 text-warning"></i>Edit Tiket Servis';
+                document.getElementById('btn-submit').innerHTML = '<i class="fa-solid fa-check me-1"></i> Update Tiket';
+                document.getElementById('btn-cancel').classList.remove('d-none');
+            }
+        }
+
+        function deleteTicket(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus tiket servis ini?')) {
+                tickets = tickets.filter(t => t.id != id);
+                saveAndRender();
+            }
+        }
+
+        function resetForm() {
+            ticketForm.reset();
+            ticketForm.classList.remove('was-validated');
+            document.getElementById('ticket-id').value = '';
+            document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-plus-circle me-2 text-primary"></i>Buat Tiket Servis Baru';
+            document.getElementById('btn-submit').innerHTML = '<i class="fa-solid fa-save me-1"></i> Simpan Tiket';
+            document.getElementById('btn-cancel').classList.add('d-none');
+        }
+    </script>
+</body>
+</html>
